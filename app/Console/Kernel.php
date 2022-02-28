@@ -3,10 +3,14 @@
 namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
+    protected $commands = [
+        Commands\Postnotification::class,
+    ];
     /**
      * Define the application's command schedule.
      *
@@ -16,6 +20,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->command('post:notification')
+        ->everySixHours()
+        ->when(function ()
+        {
+            return \App\Models\Post::whereBetween('created_at', array(Carbon::now()->subMinutes(1), Carbon::now()))->exists();
+        });
     }
 
     /**

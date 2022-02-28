@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Post extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'title',
+        'description',
+        'postcontent',
+        'user_id'
+    ];
+    public function users()
+    {
+        return $this->hasOne('App\Models\User', "id", "user_id");
+    }
 }
