@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Share extends Model
+class Like extends Model
 {
+    protected $fillable = ['user_id', 'post_id'];
+    protected $table ='likes';
     use HasFactory;
-    protected $fillable = ['user_id', 'post_id', 'shared_to', 'platform'];
-
     public function users()
     {
         return $this->hasOne('App\Models\User', 'id', 'user_id');

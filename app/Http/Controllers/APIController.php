@@ -36,7 +36,7 @@ class ApiController extends Controller
         ]);
 
         $user->sendEmailVerificationNotification();
-        
+
         //User created, return success response
         return response()->json([
             'success' => true,
@@ -44,7 +44,7 @@ class ApiController extends Controller
             'data' => $user
         ], Response::HTTP_OK);
     }
- 
+
     public function authenticate(Request $request)
     {
         $credentials = $request->only('email', 'password');
@@ -76,14 +76,14 @@ class ApiController extends Controller
                 	'message' => 'Could not create token.',
                 ], 500);
         }
- 	
+
  		//Token created, return with success response and jwt token
         return response()->json([
             'success' => true,
             'token' => $token,
         ]);
     }
- 
+
     public function logout(Request $request)
     {
         //valid credential
@@ -96,10 +96,10 @@ class ApiController extends Controller
             return response()->json(['error' => $validator->messages()], 200);
         }
 
-		//Request is validated, do logout        
+		//Request is validated, do logout
         try {
             JWTAuth::invalidate($request->token);
- 
+
             return response()->json([
                 'success' => true,
                 'message' => 'User has been logged out'
@@ -111,15 +111,47 @@ class ApiController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
- 
+
     public function get_user(Request $request)
     {
         $this->validate($request, [
             'token' => 'required'
         ]);
- 
+
         $user = JWTAuth::authenticate($request->token);
- 
+
         return response()->json(['user' => $user]);
+    }
+
+    public function update(Request $request,$user)
+    {
+        //Validate data
+        $data = $request->only('name', 'email', 'password',);
+        $validator = Validator::make($data, [
+            'name' => 'required|string',
+            'email' => 'required',
+            'password' => 'required',
+
+        ]);
+
+        //Send failed response if request is not valid
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->messages()], 200);
+        }
+
+        //Request is valid, update product
+        $data = User::where('id',$user)->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password)
+
+        ]);
+
+        //Product updated, return success response
+        return response()->json([
+            'success' => true,
+            'message' => 'User updated successfully',
+            'data' => $data
+        ], Response::HTTP_OK);
     }
 }

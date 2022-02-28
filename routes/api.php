@@ -6,7 +6,9 @@ use App\Http\Controllers\APIController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\EmailVerificationController;
-
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ShareController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,11 +35,16 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('/verify-email/{id}', [EmailVerificationController::class, 'verify'])->name('verification.verify');
     Route::get('/email/verification-notification', [EmailVerificationController::class, 'resend'])->name('verification.resend');
     Route::get('/discover', [PostController::class, 'index']);
-    Route::get('/UserFeeds', [PostController::class, 'show']);
+    Route::post('/update/{user}', [ApiController::class, 'update']);
+    Route::get('/Feeds', [PostController::class, 'show']);
     Route::post('/createpost', [PostController::class, 'store']);
     Route::post('/update/{post}',  [PostController::class, 'update']);
     Route::delete('/delete/{post}',  [PostController::class, 'destroy']);
     Route::post('/createfollower', [PostController::class,'createfollower']);
-    Route::post('/post/like', [PostController::class,'likePost']);
-    Route::get('/post/likes/{req}', [PostController::class,'getLikes']);
+    Route::post('/post/like', [LikeController::class,'like']);
+    Route::get('/post/likes/{req}', [LikeController::class,'getLikes']);
+    Route::post('/createcomment', [CommentController::class, 'createcomment']);
+    Route::get('/showcomment', [CommentController::class, 'showcomment']);
+    Route::post('/sharePost', [ShareController::class, 'sharePost']);
+    Route::post('/deleteshare/{share}', [ShareController::class, 'destroy']);
 });
