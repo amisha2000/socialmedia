@@ -109,15 +109,15 @@ class PostController extends Controller
             $id=$f['user_id'];
             $post=Post::where('user_id','=',$id)->get();
         }
-        return $post;
+        
 
 
-        // if (!$follower) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => 'Sorry, posts not found.'
-        //     ], 400);
-        // }
+        if ($post) {
+            return response()->json([
+                'success' => true,
+                'Posts' => $post
+            ], 200);
+        }
 
         // return $post;
     }
